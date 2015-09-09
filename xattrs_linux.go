@@ -2,12 +2,12 @@ package continuity
 
 import "golang.org/x/sys/unix"
 
-func getxattr(path string, attr string, dest []byte) (sz int, err error) {
+func getxattr(path string, attr string, dest []byte, flags int) (sz int, err error) {
 	return unix.Getxattr(path, attr, dest)
 }
 
 func listxattr(path string, dest []byte, flags int) (sz int, err error) {
-	return unix.Listxattr(path, dest, flags)
+	return unix.Listxattr(path, dest)
 }
 
 func removexattr(path string, attr string) (err error) {

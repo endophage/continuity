@@ -7,18 +7,6 @@ import (
 
 // from /usr/include/sys/types.h
 
-func major(dev uint) int {
-	return int(uint(dev>>24) & 0xff)
-}
-
-func minor(dev uint) int {
-	return int(dev & 0xffffff)
-}
-
-func makedev(major int, minor int) int {
-	return ((major << 24) | minor)
-}
-
 // mknod provides a shortcut for syscall.Mknod
 func mknod(p string, mode os.FileMode, maj, min int) error {
 	var (

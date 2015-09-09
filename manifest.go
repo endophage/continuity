@@ -3,6 +3,7 @@ package continuity
 import (
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -240,7 +241,7 @@ func sanitize(root, p string) (string, error) {
 
 // hardlinkKey provides a tuple-key for managing hardlinks.
 type hardlinkKey struct {
-	dev   int32
+	dev   uint64
 	inode uint64
 }
 

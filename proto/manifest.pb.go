@@ -97,3 +97,6 @@ type KeyValue struct {
 func (m *KeyValue) Reset()         { *m = KeyValue{} }
 func (m *KeyValue) String() string { return proto1.CompactTextString(m) }
 func (*KeyValue) ProtoMessage()    {}
+
+func init() {
+}
