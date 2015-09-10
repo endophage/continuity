@@ -3,9 +3,7 @@ package continuity
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
-	"os/user"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -22,13 +20,13 @@ func BuildManifest(root string, includeFn filepath.WalkFunc) (*pb.Manifest, erro
 	entriesByPath := map[string]*pb.Entry{}
 	hardlinks := map[hardlinkKey][]*pb.Entry{}
 
-	gi, err := getGroupIndex()
-	if err != nil {
-		return nil, err
-	}
+	//gi, err := getGroupIndex()
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	// normalize to absolute path
-	root, err = filepath.Abs(filepath.Clean(root))
+	root, err := filepath.Abs(filepath.Clean(root))
 	if err != nil {
 		return nil, err
 	}
@@ -53,13 +51,13 @@ func BuildManifest(root string, includeFn filepath.WalkFunc) (*pb.Manifest, erro
 
 		uid, gid := sysStat.Uid, sysStat.Gid
 
-		u, err := user.LookupId(fmt.Sprint(uid))
-		if err != nil {
-			return err
-		}
-		entry.User = u.Username
+		//u, err := user.LookupId(fmt.Sprint(uid))
+		//if err != nil {
+		//	return err
+		//}
+		//entry.User = u.Username
 		entry.Uid = fmt.Sprint(uid)
-		entry.Group = gi.byGID[int(gid)].name
+		//entry.Group = gi.byGID[int(gid)].name
 		entry.Gid = fmt.Sprint(gid)
 
 		if fi.Mode().IsRegular() || fi.Mode().IsDir() || fi.Mode()&os.ModeSymlink != 0 {
@@ -69,28 +67,28 @@ func BuildManifest(root string, includeFn filepath.WalkFunc) (*pb.Manifest, erro
 			// the inode.
 
 			// TODO(stevvooe): Handle xattrs.
-			xattrs, err := Listxattr(p)
-			if err != nil {
-				log.Println("error listing xattrs ", p)
-				return err
-			}
+			//xattrs, err := Listxattr(p)
+			//if err != nil {
+			//	log.Println("error listing xattrs ", p, err)
+			//	return err
+			//}
 
-			sort.Strings(xattrs)
+			//sort.Strings(xattrs)
 
-			// TODO(stevvooe): This is very preliminary support for xattrs. We
-			// still need to ensure that links aren't being followed.
-			for _, attr := range xattrs {
-				value, err := Getxattr(p, attr)
-				if err != nil {
-					log.Printf("error getting xattrs: %v %q %v %v", p, attr, xattrs, len(xattrs))
-					return err
-				}
+			//// TODO(stevvooe): This is very preliminary support for xattrs. We
+			//// still need to ensure that links aren't being followed.
+			//for _, attr := range xattrs {
+			//	value, err := Getxattr(p, attr)
+			//	if err != nil {
+			//		log.Printf("error getting xattrs: %v %q %v %v", p, attr, xattrs, len(xattrs))
+			//		return err
+			//	}
 
-				entry.Xattr = append(entry.Xattr, &pb.KeyValue{
-					Name:  attr,
-					Value: string(value),
-				})
-			}
+			//	entry.Xattr = append(entry.Xattr, &pb.KeyValue{
+			//		Name:  attr,
+			//		Value: string(value),
+			//	})
+			//}
 		}
 
 		// TODO(stevvooe): Handle windows alternate data streams.
