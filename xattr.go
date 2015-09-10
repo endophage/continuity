@@ -1,9 +1,6 @@
 package continuity
 
-import (
-	"bytes"
-	"syscall"
-)
+import "syscall"
 
 const (
 	XATTR_NOFOLLOW = iota << 1
@@ -18,38 +15,39 @@ func Setxattr(path, name string, data []byte) error {
 }
 
 func Listxattr(path string) ([]string, error) {
-	var p []byte // nil on first execution
+	return []string{}, nil
+	//var p []byte // nil on first execution
 
-	for {
-		n, err := listxattr(path, p, XATTR_NOFOLLOW) // first call gets buffer size.
-		if err != nil {
-			return nil, err
-		}
+	//for {
+	//	n, err := listxattr(path, p, XATTR_NOFOLLOW) // first call gets buffer size.
+	//	if err != nil {
+	//		return nil, err
+	//	}
 
-		if n > len(p) {
-			p = make([]byte, n)
-			continue
-		}
+	//	if n > len(p) {
+	//		p = make([]byte, n)
+	//		continue
+	//	}
 
-		p = p[:n]
+	//	p = p[:n]
 
-		ps := bytes.Split(bytes.TrimSuffix(p, []byte{0}), []byte{0})
-		var entries []string
-		for _, p := range ps {
-			s := string(p)
-			if s != "" {
-				entries = append(entries, s)
-			}
-		}
+	//	ps := bytes.Split(bytes.TrimSuffix(p, []byte{0}), []byte{0})
+	//	var entries []string
+	//	for _, p := range ps {
+	//		s := string(p)
+	//		if s != "" {
+	//			entries = append(entries, s)
+	//		}
+	//	}
 
-		return entries, nil
-	}
+	//	return entries, nil
+	//}
 }
 
 func Getxattr(path, attr string) ([]byte, error) {
 	var p []byte = make([]byte, defaultXattrBufferSize)
 	for {
-		n, err := getxattr(path, attr, p, XATTR_NOFOLLOW)
+		n, err := getxattr(path, attr, p)
 		if err != nil {
 			if errno, ok := err.(syscall.Errno); ok && errno == syscall.ERANGE {
 				p = make([]byte, len(p)*2) // this can't be ideal.
