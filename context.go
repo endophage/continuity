@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/docker/distribution/digest"
 )
 
@@ -97,6 +98,7 @@ func (c *context) Resource(p string, fi os.FileInfo) (Resource, error) {
 	if fi == nil {
 		fi, err = os.Lstat(fp)
 		if err != nil {
+			logrus.Error("Errored on os.Lstat in continuity: ", err.Error())
 			return nil, err
 		}
 	}
@@ -260,6 +262,7 @@ func digestPath(p string) (digest.Digest, error) {
 
 	f, err := os.Open(p)
 	if err != nil {
+		logrus.Error("Errored on os.Open in continuity: ", err.Error())
 		return "", err
 	}
 	defer f.Close()
