@@ -94,7 +94,6 @@ func (c *context) Resource(p string, fi os.FileInfo) (Resource, error) {
 		return nil, err
 	}
 
-	log.Println("resource", p, fp)
 	if fi == nil {
 		fi, err = os.Lstat(fp)
 		if err != nil {
@@ -115,11 +114,13 @@ func (c *context) Resource(p string, fi os.FileInfo) (Resource, error) {
 	// TODO(stevvooe): Handle windows alternate data streams.
 
 	if fi.Mode().IsRegular() {
-		dgst, err := digestPath(fp)
-		if err != nil {
-			return nil, err
+		var dgst digest.Digest
+		if fi.Size() > 0 {
+			dgst, err = digestPath(fp)
+			if err != nil {
+				return nil, err
+			}
 		}
-
 		return newRegularFile(p, fi, base, dgst)
 	}
 
@@ -180,7 +181,7 @@ func (c *context) Resource(p string, fi os.FileInfo) (Resource, error) {
 	// 	return nil // sockets are skipped, no point
 	// }
 
-	log.Printf("%q (%v) is not supported", fp, fi.Mode())
+	//log.Printf("%q (%v) is not supported", fp, fi.Mode())
 	return nil, ErrNotFound
 }
 
